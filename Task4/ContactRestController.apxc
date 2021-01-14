@@ -1,0 +1,64 @@
+@RestResource(urlMapping='/ContactRest/*')
+global with sharing class ContactRestController {
+
+    @HttpGet
+    global static String healthCheck() {
+       
+        return 'OK';
+    }
+    
+    private List<String> ableToUpdateFields = new List<String>{'FirstName','LastName','Email','Title'};
+
+    @HttpPost
+    global static UpdateContactsResponse updateContacts(Contact[] contacts) {
+        UpdateContactsResponse res = new UpdateContactsResponse();
+        for(Contact c : contacts){
+            if(c.Id != null){
+                Contact[] currents = [select Id
+                          ,Name, Counter__c
+                     from Contact 
+                    where Id = :c.Id];
+                if(currents != null && !currents.isEmpty()){
+                    Contact current = currents[0];
+                    current.FirstName = c.FirstName;
+                    current.LastName = c.LastName;
+                    current.Email = c.Email;
+                    current.Title = c.Title;
+                    update current;
+                    res.add(new EntityResponse(c.Id, 'SUCCESS', ''));
+                }else{
+                    res.add(new EntityResponse(c.Id, 'INVALID', 'Invalid id!'));
+                }
+            	
+            }else{
+                
+            	res.add(new EntityResponse(c.Id, 'INVALID', 'Missed id of Contact to update!'));
+            }
+        }
+        return res;
+    }
+    
+    global class UpdateContactsResponse{
+        public List<EntityResponse> response { get; set; }
+        public UpdateContactsResponse(){
+            response = new List<EntityResponse>();
+        }
+        
+        public void add(EntityResponse e){
+            response.add(e);
+        }
+    }
+    
+    class EntityResponse{
+        public String id { get; set; }
+        public String status { get; set; }
+        public String message { get; set; }
+        
+        public EntityResponse(){}
+        public EntityResponse(String id, String status, String message){
+            this.id = id;
+            this.status = status;
+            this.message = message;
+        }
+    }
+}

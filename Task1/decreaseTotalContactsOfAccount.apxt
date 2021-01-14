@@ -1,0 +1,15 @@
+trigger decreaseTotalContactsOfAccount on Contact (before delete) {
+	if (Trigger.isDelete) {
+        if (Trigger.isBefore) {
+            // Process before insert 
+            for(Contact c : Trigger.old) {
+                Account[] accounts= [SELECT Id,Name,TotalContacts__c  FROM Account WHERE Id =:c.AccountId];
+                if(accounts != null && !accounts.isEmpty()){
+                    Account a = accounts[0];
+                    a.TotalContacts__c--;
+                    update a;
+                }
+            } 
+        }       
+    }
+}
