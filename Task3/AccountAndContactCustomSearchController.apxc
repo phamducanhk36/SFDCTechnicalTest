@@ -1,81 +1,84 @@
 global with sharing class AccountAndContactCustomSearchController {
-	public List<ResultDTO> results { get; set; }
+
+    public List<ResultDTO> results { get; set; }
     public String name { get; set; }
-     public AccountAndContactCustomSearchController()
-    {
-    }
-    public PageReference search()
-    {
+
+    public AccountAndContactCustomSearchController(){}
+
+    public PageReference search() {
         results = new List<ResultDTO>();
-        String searchString = name + '%'; 
-        List<Contact> contacts = [select Id
-                          ,Name, Counter__c
-                     from Contact 
-                    where Name like :searchString];
-        for(Contact c : contacts){
-            String url = 'https://' + Url.getSalesforceBaseUrl().getHost() + '/lightning/r/Contact/' + c.id + '/view' ;
+        String searchString = name + '%';
+        List<Contact> contacts = [select Id, Name, Counter__c
+        from Contact
+        where Name like:
+        searchString];
+        for (Contact c : contacts) {
+            String url = 'https://' + Url.getSalesforceBaseUrl().getHost() + '/lightning/r/Contact/' + c.id + '/view';
             ResultDTO r = new ResultDTO(c.id, c.name, 'Contact', url, c.counter__c);
             results.add(r);
         }
-        
+
         List<Account> accounts = [select Id, Name, Counter__c
-                     from Account 
-                    where Name like :searchString];
-        for(Account a : accounts){
-            String url = 'https://' + Url.getSalesforceBaseUrl().getHost() + '/lightning/r/Account/' + a.id + '/view' ;
+        from Account
+        where Name like:
+        searchString];
+        for (Account a : accounts) {
+            String url = 'https://' + Url.getSalesforceBaseUrl().getHost() + '/lightning/r/Account/' + a.id + '/view';
             ResultDTO r = new ResultDTO(a.id, a.name, 'Account', url, a.counter__c);
             results.add(r);
         }
         return null;
     }
 
-@RemoteAction
+    @RemoteAction
     global static Decimal increaseCounter(String id, String type) {
         switch on type {
-            when 'Account' {		
+            when 'Account' {
                 return increaseAccountCounter(id);
-            }	
-            when 'Contact' {		
-               return increaseContactCounter(id);
+            }
+            when 'Contact' {
+                return increaseContactCounter(id);
             }
         }
         return 0;
     }
-    
+
     @RemoteAction
     global static Decimal increaseAccountCounter(String id) {
         Account account = [SELECT Id, Name, Counter__c
-                   FROM Account WHERE Id = :id];
-        if(account.Counter__c != null){
-           account.Counter__c++; 
-        }else{
-            account.Counter__c = 1; 
+        FROM Account WHERE Id = :id];
+        if (account.Counter__c != null) {
+            account.Counter__c++;
+        } else {
+            account.Counter__c = 1;
         }
-        
+
         update account;
         return account.Counter__c;
     }
-    
+
     @RemoteAction
     global static Decimal increaseContactCounter(String id) {
         Contact contact = [SELECT Id, Name, Counter__c
-                   FROM Contact WHERE Id = :id];
-        if(contact.Counter__c != null){
-           contact.Counter__c++; 
-        }else{
-            contact.Counter__c = 1; 
+        FROM Contact WHERE Id = :id];
+        if (contact.Counter__c != null) {
+            contact.Counter__c++;
+        } else {
+            contact.Counter__c = 1;
         }
         update contact;
         return contact.Counter__c;
-    }    
+    }
     public class ResultDTO {
         public String id { get; set; }
         public String name { get; set; }
         public String type { get; set; }
         public String url { get; set; }
         public Decimal counter { get; set; }
+
         public ResultDTO(){}
-        public ResultDTO(String id, String name, String type, String url, Decimal counter){
+
+        public ResultDTO(String id, String name, String type, String url, Decimal counter) {
             this.id = id;
             this.name = name;
             this.type = type;

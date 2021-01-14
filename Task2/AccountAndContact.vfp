@@ -1,33 +1,33 @@
 <apex:page controller="AccountAndContactSearchController">
-    <apex:form >
-        <apex:pageBlock >
+    <apex:form>
+        <apex:pageBlock>
             <apex:pageBlockButtons location="top">
-                <apex:commandButton value="Search" action="{!search}" reRender="contact-table" />
+                <apex:commandButton value="Search" action="{!search}" reRender="contact-table"/>
             </apex:pageBlockButtons>
 
-	        <apex:pageBlockSection id="contact-table" columns="1">
-	            <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Name" />
-                    <apex:inputText value="{!name}" />
-	            </apex:pageBlockSectionItem>
+            <apex:pageBlockSection id="contact-table" columns="1">
+                <apex:pageBlockSectionItem>
+                    <apex:outputLabel value="Name"/>
+                    <apex:inputText value="{!name}"/>
+                </apex:pageBlockSectionItem>
 
                 <apex:pageBlockTable value="{!results}" var="c">
-                    <apex:column >
+                    <apex:column>
                         <apex:facet name="header">Record Name</apex:facet>
                         {!c.Name}
                     </apex:column>
 
-                    <apex:column >
+                    <apex:column>
                         <apex:facet name="header">Record Type</apex:facet>
                         {!c.Type}
                     </apex:column>
 
-                    <apex:column >
+                    <apex:column>
                         <apex:facet name="header">Click to open</apex:facet>
                         <apex:outputLink value="{!c.url}" target="_blank">View</apex:outputLink>
                     </apex:column>
                 </apex:pageBlockTable>
-	        </apex:pageBlockSection>
-	    </apex:pageBlock>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
     </apex:form>
 </apex:page>

@@ -1,50 +1,47 @@
 public class AccountAndContactSearchController {
-	public List<ResultDTO> results { get; set; }
+    public List<ResultDTO> results { get; set; }
     public String name { get; set; }
 
-    public AccountAndContactSearchController()
-    {
-    }
-    
-    
+    public AccountAndContactSearchController(){}
 
-    public PageReference search()
-    {
+    public PageReference search() {
         results = new List<ResultDTO>();
-        String searchString = name + '%'; 
-        List<Contact> contacts = [select Id
-                          ,Name
-                     from Contact 
-                    where Name like :searchString];
-        for(Contact c : contacts){
-            String url = 'https://' + Url.getSalesforceBaseUrl().getHost() + '/lightning/r/Contact/' + c.id + '/view' ;
+        String searchString = name + '%';
+        List<Contact> contacts = [select Id, Name
+        from Contact
+        where Name like:
+        searchString];
+        for (Contact c : contacts) {
+            String url = 'https://' + Url.getSalesforceBaseUrl().getHost() + '/lightning/r/Contact/' + c.id + '/view';
             ResultDTO r = new ResultDTO(c.id, c.name, 'Contact', url);
             results.add(r);
         }
-        
-        List<Account> accounts = [select Id
-                          ,Name
-                     from Account 
-                    where Name like :searchString];
-        for(Account a : accounts){
-            String url = 'https://' + Url.getSalesforceBaseUrl().getHost() + '/lightning/r/Account/' + a.id + '/view' ;
+
+        List<Account> accounts = [select Id, Name
+        from Account
+        where Name like:
+        searchString];
+        for (Account a : accounts) {
+            String url = 'https://' + Url.getSalesforceBaseUrl().getHost() + '/lightning/r/Account/' + a.id + '/view';
             ResultDTO r = new ResultDTO(a.id, a.name, 'Account', url);
             results.add(r);
         }
         return null;
     }
-    
+
     public class ResultDTO {
-    public String id { get; set; }
-	public String name { get; set; }
-    public String type { get; set; }
-    public String url { get; set; }
-    public ResultDTO(){}
-    public ResultDTO(String id, String name, String type, String url){
-        this.id = id;
-        this.name = name;
-        this.type = type;
-        this.url = url;
+        public String id { get; set; }
+        public String name { get; set; }
+        public String type { get; set; }
+        public String url { get; set; }
+
+        public ResultDTO(){}
+
+        public ResultDTO(String id, String name, String type, String url) {
+            this.id = id;
+            this.name = name;
+            this.type = type;
+            this.url = url;
+        }
     }
-}
 }

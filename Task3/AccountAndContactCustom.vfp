@@ -1,66 +1,62 @@
 <apex:page controller="AccountAndContactCustomSearchController">
     <script type="text/javascript">
-    function increaseCounter(id, type) {
-  console.log(id)
-  console.log(type)
-        Visualforce.remoting.Manager.invokeAction(
-            '{!$RemoteAction.AccountAndContactCustomSearchController.increaseCounter}',
-            id, type, 
-            function(result, event){
-                console.log(result)
-                document.getElementById("counter-" + id).innerHTML = result;
-            }, 
-            {escape: true}
-        );
-    }
+        function increaseCounter(id, type) {
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.AccountAndContactCustomSearchController.increaseCounter}',
+                id, type,
+                function (result, event) {
+                    document.getElementById("counter-" + id).innerHTML = result;
+                },
+                {escape: true}
+            );
+        }
     </script>
     <style>
         .buttona {
-          background: none!important;
-          border: none;
-          padding: 0!important;
-          /*optional*/
-          font-family: arial, sans-serif;
-          /*input has OS specific font-family*/
-          color: #069;
-          text-decoration: underline;
-          cursor: pointer;
+            background: none !important;
+            border: none;
+            padding: 0 !important;
+            color: #069;
+            text-decoration: underline;
+            cursor: pointer;
         }
     </style>
-    <apex:form >
-        <apex:pageBlock >
+    <apex:form>
+        <apex:pageBlock>
             <apex:pageBlockButtons location="top">
-                <apex:commandButton value="Search" action="{!search}" reRender="contact-table" />
+                <apex:commandButton value="Search" action="{!search}" reRender="contact-table"/>
             </apex:pageBlockButtons>
 
-	        <apex:pageBlockSection id="contact-table" columns="1">
-	            <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Name" />
-                    <apex:inputText value="{!name}" />
-	            </apex:pageBlockSectionItem>
+            <apex:pageBlockSection id="contact-table" columns="1">
+                <apex:pageBlockSectionItem>
+                    <apex:outputLabel value="Name"/>
+                    <apex:inputText value="{!name}"/>
+                </apex:pageBlockSectionItem>
 
                 <apex:pageBlockTable value="{!results}" var="c">
-                    <apex:column >
+                    <apex:column>
                         <apex:facet name="header">Record Name</apex:facet>
                         <span>{!c.Name}</span>
                     </apex:column>
 
-                    <apex:column >
+                    <apex:column>
                         <apex:facet name="header">Record Type</apex:facet>
-                         <span>{!c.Type}</span>
+                        <span>{!c.Type}</span>
                     </apex:column>
 
-                    <apex:column >
+                    <apex:column>
                         <apex:facet name="header">Counter</apex:facet>
-                         <span id="counter-{!c.id}">{!c.counter}</span>
+                        <span id="counter-{!c.id}">{!c.counter}</span>
                     </apex:column>
 
-                    <apex:column >
+                    <apex:column>
                         <apex:facet name="header">Click to update counter</apex:facet>
-                        <button class='buttona' onclick="increaseCounter('{!c.id}', '{!c.Type}');return false;">Increment Counter</button>
+                        <button class='buttona' onclick="increaseCounter('{!c.id}', '{!c.Type}');return false;">
+                            Increment Counter
+                        </button>
                     </apex:column>
                 </apex:pageBlockTable>
-	        </apex:pageBlockSection>
-	    </apex:pageBlock>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
     </apex:form>
 </apex:page>
